@@ -1,0 +1,58 @@
+{
+  "loginuser": [
+    {
+      "employeename": "Alita Watson",
+      "email": "utest@yahoo.com",
+      "password": "Alita@12",
+      "id": "5dc2a99d-545e-4580-9733-0f7ede1c8ec3"
+    },
+    {
+      "employeename": "John Vogan1",
+      "email": "john@yahoo.com",
+      "password": "John@12",
+      "id": "40e5a1ab-4d05-4512-bb13-bf6ce3995271"
+    },
+    {
+      "employeename": "Tarun Kumar Das",
+      "email": "tarun1@yahoo.com",
+      "password": "Tarun@12",
+      "id": "9775e298-308d-47ad-a0d0-2e27c1126f26"
+    },
+    {
+      "employeename": "Raju Kumar",
+      "email": "raju@yahoo.com",
+      "password": "Raju@12",
+      "id": 1700295174834
+    },
+    {
+      "employeename": "Ankit Pramanik",
+      "email": "ankit@gmail.com",
+      "password": "Ankit@12",
+      "id": 1700333011189
+    },
+    {
+      "employeename": "kritti",
+      "email": "kritti@sccpl.net",
+      "password": "Kritti@12",
+      "id": 1701269383867
+    },
+    {
+      "employeename": "eldnight",
+      "email": "kritti@sccpl.net",
+      "password": "Asd!2s",
+      "id": 1701431879583
+    },
+    {
+      "employeename": "asd",
+      "email": "test@gmail.com",
+      "password": "Asd@1a",
+      "id": 1701498938360
+    },
+    {
+      "employeename": "Ankit",
+      "email": "asd@gmail.com",
+      "password": "Asd!12",
+      "id": 1701499446413
+    }
+  ]
+}
