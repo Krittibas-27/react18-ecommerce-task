@@ -11,7 +11,7 @@ const AllRoutes = () => {
     return storageData !== null ? <>{children}</> : (<><Navigate to="/login" /></>)
   }
   const PublicRoute = ({ children }) => {
-    return storageData === null ? <>{children}</> : (<><Navigate to="/login" /></>)
+    return storageData === null ? <>{children}</> : (<><Navigate to="/" /></>)
   }
 
   return (
@@ -22,7 +22,7 @@ const AllRoutes = () => {
 
       <Routes>
         <Route exac path='/login' element={<PublicRoute><Login /></PublicRoute>} />
-        <Route exac path='/product/category' element={<PrivateRoute><ProductCategoryList/></PrivateRoute>} />
+        <Route exac path='/' element={<PrivateRoute><ProductCategoryList/></PrivateRoute>} />
       </Routes>
     </>
   )

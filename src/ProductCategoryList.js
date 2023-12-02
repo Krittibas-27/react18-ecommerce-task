@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
-import { RootLoginApi } from './config/RootApi'
+import { RootEcomDummyAPI, RootLoginApi } from './config/RootApi'
 import { jsonServerProduct } from './config/BaseUrl'
 import SpinnerComponent from './components/SpinnerComponent'
 import { FiShoppingCart } from "react-icons/fi";
@@ -13,7 +13,7 @@ const ProductCategoryList = () => {
 
     const getAllProducts = () => {
         setIsLoading(true)
-        RootLoginApi.get(`${jsonServerProduct}/products`).then((res) => {
+        RootEcomDummyAPI.get(`/products`).then((res) => {
             console.log('Res-', res.data)
             if (res.status === 200) {
                 setIsLoading(false)

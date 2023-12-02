@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Card, Col, Container, Row, Form, FloatingLabel, Button } from 'react-bootstrap'
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { useForm } from "react-hook-form"
-import { RootBaseServer, RootLoginApi } from './config/RootApi';
+import { RootLoginApi } from './config/RootApi';
 import { toast } from "react-toastify";
 
 
-const Login = () => {
+const Login_old = () => {
     const [showPass, setShowPass] = useState(false);
     const {
         register,
@@ -21,23 +21,16 @@ const Login = () => {
         setShowPass((prev) => !prev);
     }
     const onSubmit = (data) => {
-        // const newData = {
-        //     employeename: data.username,
-        //     email: data.useremail,
-        //     password: data.password,
-        //     id: Date.now()
-        // }
         const newData = {
-            "user": {
-            "username": data.username,
-            "email": data.useremail,
-            "password": data.password
-            }
+            employeename: data.username,
+            email: data.useremail,
+            password: data.password,
+            id: Date.now()
         }
-        RootBaseServer.post("/api/users", newData).then((res) => {
-            //console.log('res-',res)
+        RootLoginApi.post("/loginuser", newData).then((res) => {
+            //console.log('res-',res.data)
             if (res.status === 201) {
-                localStorage.setItem("userData", JSON.stringify(res.data.user))
+                localStorage.setItem("userData", JSON.stringify(res.data))
                 toast.success("Login successful!", {
                     position: toast.POSITION.TOP_RIGHT
                 })
@@ -86,4 +79,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Login_old
