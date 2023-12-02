@@ -30,3 +30,5 @@ body{background: linear-gradient(90deg,  rgba(255,255,255,1) 0%,rgba(238,238,238
 .rating { overflow: hidden;white-space: nowrap;}
 .rating svg { white-space: nowrap;overflow: hidden;color: gold;}
 .rating svg:before { content:"\2606\2606\2606\2606\2606"; position: absolute; color: #7f7f7f;z-index: -1;}
+.cursor-pointer {cursor: pointer;}
+.quantity_box{border: #bdbdbd 1px solid; width:60px; text-align: center; font-size: 18px; color:#111; padding-top: 6px; min-height: 40px;}

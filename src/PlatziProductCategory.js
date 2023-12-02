@@ -91,10 +91,7 @@ const PlatziProductCategory = () => {
                       onClick={() => selectedCategory(item)}
                     />
                     <Card.Body>
-                      <Card.Title>{item.name}</Card.Title>
-                      {/* <Button variant="primary">
-                        <FiShoppingCart /> Add to Cart
-                      </Button> */}
+                      <Card.Title role="button" onClick={() => selectedCategory(item)}>{item.name}</Card.Title>
                     </Card.Body>
                   </Card>
                 </Col>

@@ -6,22 +6,26 @@ import {
   Container,
   Form,
   InputGroup,
+  Modal,
   Row,
+  Image,
 } from "react-bootstrap";
 import { RootProductServer } from "./config/RootApi";
 import SpinnerComponent from "./components/SpinnerComponent";
-import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiShoppingCart,FiMinus } from "react-icons/fi";
+import { FaPlus } from "react-icons/fa6";
 
 const PlatziProductList = () => {
   const {catid} = useParams();
   //console.log('catid-', catid)
-  const navigate = useNavigate();
   const [resCategoryProdicts, setResCategoryProdicts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [query, setQuery] = useState("");
+  const [viewModal, setViewModal] = useState(false);
+  const [singleProduct, setSingleProduct]=useState()
+  const [quantityValue, setQuantityValue]=useState(1)
 
   const getAllCatProducts = () => {
     setIsLoading(true);
@@ -47,16 +51,23 @@ const PlatziProductList = () => {
   const resetSearch = () => {
     setQuery("");
   };
-  const selectedCategory = (data) => {
+  const selectedProduct = (data) => {
     console.log("data-", data);
-    navigate(`categories/${data.id}/products`,{
-        state: {relatedProduct:data}
-    })
+    setViewModal(true)
+    setSingleProduct(data)
   };
+  const quantityPlus=()=>{
+    setQuantityValue(quantityValue + 1)
+  }
+  const quantityMinus=()=>{
+    if(quantityValue!==1){
+      setQuantityValue(quantityValue - 1)  
+    }
+  }
   useEffect(() => {
     getAllCatProducts();
   }, []);
-  console.log('resCategoryProdicts-',resCategoryProdicts)
+  //console.log('singleProduct-',singleProduct)
   return (
     <div className="my-4">
       <Container>
@@ -91,7 +102,8 @@ const PlatziProductList = () => {
                     <Card.Img
                       className="card_img2"
                       variant="top"
-                      src={item.images[0]}   
+                      src={item.images[0]} 
+                      onClick={()=>selectedProduct(item)}  
                     />
                     <Card.Body>
                       <Card.Title className="h6">{item.title}</Card.Title>
@@ -107,7 +119,37 @@ const PlatziProductList = () => {
           )}
         </Row>
       </Container>
+
+      <Modal centered size="lg" show={viewModal} onHide={()=>setViewModal(false)}>
+        <Modal.Header closeButton>
+        <Modal.Title>{singleProduct?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+            <Row className="align-items-center">
+                <Col md={6}>
+                <Image src={singleProduct?.images[0]} thumbnail  />
+                </Col>
+                <Col md={6}>
+                    <small>{singleProduct?.category?.name}</small>
+                    <h5 className="text-dark">{singleProduct?.title}</h5>
+                    {/* <p>{singleProduct.description}</p> */}
+                    <span>Price - <strong>${singleProduct?.price}</strong></span>
+                    <div className="d-flex mb-3 align-items-center">
+                        <span>Quantity  </span>
+                        <Button variant="default" onClick={()=>quantityMinus()}><FiMinus/></Button>
+                        <div className="quantity_box">{quantityValue}</div>
+                        <Button variant="default" onClick={()=>quantityPlus()}><FaPlus /></Button>
+                    </div>
+                    <Button variant="primary">
+                        <FiShoppingCart /> Add to Cart
+                      </Button>
+                </Col>
+            </Row>
+        </Modal.Body>
+        </Modal>
     </div>
+
+
   )
   
 };
