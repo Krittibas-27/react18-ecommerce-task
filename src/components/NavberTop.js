@@ -16,8 +16,9 @@ const NavberTop = () => {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav" className='justify-content-end'>
           <Nav className="ml-auto">
-
-            <Nav.Link href="/product/category">Product Category</Nav.Link>
+            
+            <Nav.Link href="/product/category">Old Product Category</Nav.Link>
+            <Nav.Link href="/">Platzi Products </Nav.Link>
             
             {
               storageData ? 

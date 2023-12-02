@@ -1,5 +1,5 @@
 import axios from "axios";
-import { RealServerUrl, dbLoginUrl, jsonServerProduct } from "./BaseUrl";
+import { RealServerUrl, dbLoginUrl, jsonServerProduct, productServerUrl } from "./BaseUrl";
 
 export const RootLoginApi = axios.create({
     baseURL: dbLoginUrl
@@ -9,4 +9,7 @@ export const RootEcomDummyAPI = axios.create({
 })
 export const RootBaseServer = axios.create({
     baseURL: RealServerUrl
+})
+export const RootProductServer = axios.create({
+    baseURL:productServerUrl
 })

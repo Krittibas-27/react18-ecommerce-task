@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Card, Col, Container, Row, Form, FloatingLabel, Button } from 'react-bootstrap'
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { useForm } from "react-hook-form"
-import { RootBaseServer, RootLoginApi } from './config/RootApi';
+import { RootBaseServer } from './config/RootApi';
 import { toast } from "react-toastify";
 
 

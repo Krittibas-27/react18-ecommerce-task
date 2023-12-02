@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
-import { RootEcomDummyAPI, RootLoginApi } from './config/RootApi'
-import { jsonServerProduct } from './config/BaseUrl'
+import { RootEcomDummyAPI } from './config/RootApi'
 import SpinnerComponent from './components/SpinnerComponent'
 import { FiShoppingCart } from "react-icons/fi";
 
