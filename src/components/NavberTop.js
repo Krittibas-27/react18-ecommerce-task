@@ -2,13 +2,14 @@ import React from 'react'
 import { Navbar, Container, Nav, Badge } from 'react-bootstrap';
 import { FiShoppingCart } from "react-icons/fi";
 
-const NavberTop = () => {
+const NavberTop = ({allSelectedProduct}) => {
   const storageData = JSON.parse(localStorage.getItem("userData"))
   const logOutUser = () => {
     //console.log('click')
     localStorage.removeItem("userData");
     window.location.reload();
   };
+  console.log('allSelectedProduct', allSelectedProduct?.length)
   return (
     <Navbar expand="lg" className="bg-primary" data-bs-theme="dark">
       <Container>
@@ -29,7 +30,7 @@ const NavberTop = () => {
             }
           </Nav>
         </Navbar.Collapse>
-         <FiShoppingCart className='text-white' size={30}/><Badge pill bg="light" text="dark" className='budge_menubar'> 0</Badge>
+         <FiShoppingCart className='text-white' size={30}/><Badge pill bg="light" text="dark" className='budge_menubar'> {allSelectedProduct?.length}</Badge>
       </Container>
     </Navbar>
   )

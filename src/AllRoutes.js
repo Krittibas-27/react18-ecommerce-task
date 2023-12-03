@@ -18,9 +18,9 @@ const AllRoutes = () => {
 
   return (
     <>
-      <PrivateRoute>
+      {/* <PrivateRoute>
         <NavberTop />
-      </PrivateRoute>
+      </PrivateRoute> */}
 
       <Routes>
         <Route exac path='/login' element={<PublicRoute><Login /></PublicRoute>} />

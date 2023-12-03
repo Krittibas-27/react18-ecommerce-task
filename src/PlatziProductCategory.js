@@ -16,6 +16,7 @@ import { IoEyeOutline } from "react-icons/io5";
 import { MdImageSearch } from "react-icons/md";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import NavberTop from "./components/NavberTop";
 
 const PlatziProductCategory = () => {
   const navigate = useNavigate();
@@ -66,6 +67,8 @@ const PlatziProductCategory = () => {
   }, []);
 
   return (
+    <>
+    <NavberTop title="PlatziProductCategory"/>
     <div className="my-4">
       <Container>
         <h1 className="text-center">ProductCategoryList</h1>
@@ -154,6 +157,7 @@ const PlatziProductCategory = () => {
         </Modal.Body>
       </Modal>
     </div>
+    </>
   );
 };
 

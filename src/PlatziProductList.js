@@ -15,6 +15,7 @@ import SpinnerComponent from "./components/SpinnerComponent";
 import { useParams } from "react-router-dom";
 import { FiShoppingCart, FiMinus } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
+import NavberTop from "./components/NavberTop";
 
 const PlatziProductList = () => {
   const { catid } = useParams();
@@ -61,20 +62,24 @@ const PlatziProductList = () => {
     setQuantityValue(quantityValue + 1);
   };
   const quantityMinus = () => {
-    if (quantityValue !== 0) {
+    if (quantityValue === 0) {
+      setQuantityValue(0);
+    }else{
       setQuantityValue(quantityValue - 1);
     }
   };
   const addToCartProduct = (item) => {
-    if (allSelectedProduct.indexOf(item) !== -1) return;
+   if (allSelectedProduct.indexOf(item) !== -1) return;
     setAllSelectedProduct([...allSelectedProduct, item]);
     setQuantityValue(quantityValue + 1);
   };
   useEffect(() => {
     getAllCatProducts();
   }, []);
-  console.log("quantityValue-", quantityValue);
+ // console.log("quantityValue-", quantityValue);
   return (
+    <>
+    <NavberTop title="PlatziProductList" allSelectedProduct={allSelectedProduct}/>
     <div className="my-4">
       <Container>
         <h1 className="text-center">Products</h1>
@@ -190,6 +195,8 @@ const PlatziProductList = () => {
         </Modal.Body>
       </Modal>
     </div>
+    </>
+    
   );
 };
 
