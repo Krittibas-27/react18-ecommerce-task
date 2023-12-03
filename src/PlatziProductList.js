@@ -25,7 +25,7 @@ const PlatziProductList = () => {
   const [query, setQuery] = useState("");
   const [viewModal, setViewModal] = useState(false);
   const [singleProduct, setSingleProduct] = useState();
-  const [quantityValue, setQuantityValue] = useState(1);
+  const [quantityValue, setQuantityValue] = useState(0);
   const [allSelectedProduct, setAllSelectedProduct] = useState([]);
 
   const getAllCatProducts = () => {
@@ -61,20 +61,19 @@ const PlatziProductList = () => {
     setQuantityValue(quantityValue + 1);
   };
   const quantityMinus = () => {
-    if (quantityValue !== 1) {
+    if (quantityValue !== 0) {
       setQuantityValue(quantityValue - 1);
     }
   };
   const addToCartProduct = (item) => {
-     //if (allSelectedProduct.indexOf(item)) return;
-     if (allSelectedProduct.indexOf(item) !== -1) return
-     setAllSelectedProduct([...allSelectedProduct, item]);
-    console.log('click')
+    if (allSelectedProduct.indexOf(item) !== -1) return;
+    setAllSelectedProduct([...allSelectedProduct, item]);
+    setQuantityValue(quantityValue + 1);
   };
   useEffect(() => {
     getAllCatProducts();
   }, []);
-  console.log("allSelectedProduct-", allSelectedProduct);
+  console.log("quantityValue-", quantityValue);
   return (
     <div className="my-4">
       <Container>
@@ -117,7 +116,7 @@ const PlatziProductList = () => {
                       <Card.Subtitle className="mb-2 text-muted">
                         Price - ${item.price}
                       </Card.Subtitle>
-                      <Button
+                      {/* <Button
                         variant="primary"
                         onClick={() => addToCartProduct(item)}
                         disabled={allSelectedProduct.some(
@@ -125,7 +124,7 @@ const PlatziProductList = () => {
                         )}
                       >
                         <FiShoppingCart /> Add to Cart
-                      </Button>
+                      </Button> */}
                     </Card.Body>
                   </Card>
                 </Col>
@@ -157,21 +156,35 @@ const PlatziProductList = () => {
                 Price - <strong>${singleProduct?.price}</strong>
               </span>
               <div className="d-flex mb-3 align-items-center">
-                <span>Quantity </span>
-                <Button variant="default" onClick={() => quantityMinus()}>
-                  <FiMinus />
-                </Button>
-                <div className="quantity_box">{quantityValue}</div>
-                <Button variant="default" onClick={() => quantityPlus()}>
-                  <FaPlus />
-                </Button>
+                <span className="mr-2">Quantity </span> &nbsp;
+                {quantityValue === 0 ? (
+                  <Button
+                    size="sm"
+                    variant="success"
+                    onClick={() => addToCartProduct(singleProduct)}
+                  >
+                    Add Product
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="default" onClick={() => quantityMinus()}>
+                      <FiMinus />
+                    </Button>
+                    <div className="quantity_box">{quantityValue}</div>
+                    <Button variant="default" onClick={() => quantityPlus()}>
+                      <FaPlus />
+                    </Button>
+                  </>
+                )} 
               </div>
-              <Button variant="primary" onClick={() => addToCartProduct(singleProduct)}
-                        disabled={allSelectedProduct.some(
-                          (ele) => ele.id === singleProduct.id
-                        )}>
-                <FiShoppingCart /> Add to Cart
-              </Button>
+              {quantityValue > 0 ? (
+                <Button
+                  variant="primary"
+                  onClick={() => addToCartProduct(singleProduct)}
+                >
+                  <FiShoppingCart /> Add to Cart
+                </Button>
+              ) : null}
             </Col>
           </Row>
         </Modal.Body>
