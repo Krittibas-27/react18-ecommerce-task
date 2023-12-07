@@ -20,7 +20,8 @@ body{background: linear-gradient(90deg,  rgba(255,255,255,1) 0%,rgba(238,238,238
 }
 .card_img {width:100%; height: 250px; object-fit: cover; }
 .card_img2 {width:100%; height: 220px; object-fit: cover; cursor: pointer;}
-.budge_menubar{z-index: 1; left:-5px; position:relative; top:-5px}
+.cart_icon{position: relative; right: 0px;}
+.budge_menubar{z-index: 1; position:relative; top:-5px;right:0px}
 
 .star { 
   width:150px; 
