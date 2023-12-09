@@ -27,9 +27,11 @@ const PlatziProductList = () => {
   const [isError, setIsError] = useState(false);
   const [query, setQuery] = useState("");
   const [viewModal, setViewModal] = useState(false);
-  const [singleProduct, setSingleProduct] = useState();
+  const [singleProduct, setSingleProduct] = useState(null);
   const [allSelectedProduct, setAllSelectedProduct] = useState([]);
   const [cartModal, setCartModal] = useState(false);
+  const [quantity, setQuantity]= useState()
+  const [newQuantity, setNewQuantity]= useState()
 
   const getAllCatProducts = () => {
     setIsLoading(true);
@@ -38,7 +40,12 @@ const PlatziProductList = () => {
         //console.log("Res-", res);
         if (res.status === 200) {
           setIsLoading(false);
-          setResCategoryProdicts(res.data.reverse());
+          const newManageProduct = res.data.map((product)=>({
+            ...product,
+            productQuantity:0, 
+          }))
+          //console.log('newManageProduct=>',newManageProduct)
+          setResCategoryProdicts(newManageProduct);
           setIsError(false);
         }
       })
@@ -56,36 +63,42 @@ const PlatziProductList = () => {
     setQuery("");
   };
   const selectedProduct = (data) => {
-    //console.log("data-", data);
     setViewModal(true);
-    setSingleProduct({ ...data, quantity: 0 });
+    setSingleProduct(data);
   };
-  const AddProduct = (num) => {
-    setSingleProduct({ ...singleProduct, quantity: num + 1 });
+  const addProduct = (productValue) => {
+    const incrementedProduct = resCategoryProdicts.map((pList)=>{
+      //console.log('pList=>',pList)
+      if(pList.id === productValue.id){
+        setQuantity(productValue.productQuantity++)
+        setNewQuantity(pList.productQuantity)
+        return {...pList, productQuantity: pList.productQuantity }
+      }
+      return pList
+    })
+    console.log('incrementedProduct=>',incrementedProduct)
+    return incrementedProduct
   };
-  const quantityPlus = () => {
-    //setSingleProduct(singleProduct.quantity+1);
-    setSingleProduct({
-      ...singleProduct,
-      quantity: singleProduct.quantity + 1,
-    });
+  const quantityPlus = (productValue) => {
+    const incrementedProduct = resCategoryProdicts.map((pList)=>{
+      if(pList.id === productValue.id){
+        setQuantity(productValue.productQuantity++)
+        setNewQuantity(pList.productQuantity)
+        return {...pList, productQuantity: pList.productQuantity }
+      }
+      return pList
+    })
+    return incrementedProduct
   };
   const quantityMinus = () => {
-    // if (quantityValue === 0) {
-    //   setQuantityValue(0);
-
-    //   console.log('click')
-    // }else{
-    //   setQuantityValue(quantityValue - 1);
-    //   console.log('end')
-    // }
-    if (singleProduct.quantity > 0) {
+    if (singleProduct.productQuantity > 0) {
       setSingleProduct({
         ...singleProduct,
-        quantity: singleProduct.quantity - 1,
+        productQuantity: singleProduct.productQuantity - 1,
       });
     }
   };
+  console.log('singleProduct=>', singleProduct)
   const addToCartProduct = (item) => {
     if (allSelectedProduct.indexOf(item) !== -1) return;
     setAllSelectedProduct([...allSelectedProduct, item]);
@@ -96,18 +109,21 @@ const PlatziProductList = () => {
   const ViewCartList = () => {
     setCartModal(true);
   };
-  const cartQuantityMinus=()=>{
-    
-  }
-  const cartQuantityPlus=(data)=>{
+  const cartQuantityMinus = () => {};
+  const cartQuantityPlus = (data) => {
+    setAllSelectedProduct([
+      ...allSelectedProduct,
+      {
+        ...data,
+        quantity: data.quantity + 1,
+      },
+    ]);
+  };
+  const deleteCartItem = (data) => {
     setAllSelectedProduct(
-      [...allSelectedProduct,{
-       ...data, quantity: data.quantity+1
-    }])
-  }
-  const deleteCartItem=(data)=>{
-    setAllSelectedProduct(allSelectedProduct.filter((item)=>item.id !== data.id))
-  }
+      allSelectedProduct.filter((item) => item.id !== data.id)
+    );
+  };
   useEffect(() => {
     getAllCatProducts();
   }, []);
@@ -160,15 +176,6 @@ const PlatziProductList = () => {
                         <Card.Subtitle className="mb-2 text-muted">
                           Price - ${item.price}
                         </Card.Subtitle>
-                        {/* <Button
-                        variant="primary"
-                        onClick={() => addToCartProduct(item)}
-                        disabled={allSelectedProduct.some(
-                          (ele) => ele.id === item.id
-                        )}
-                      >
-                        <FiShoppingCart /> Add to Cart
-                      </Button> */}
                       </Card.Body>
                     </Card>
                   </Col>
@@ -201,11 +208,11 @@ const PlatziProductList = () => {
                 </span>
                 <div className="d-flex mb-3 align-items-center">
                   <span className="mr-2">Quantity </span> &nbsp;
-                  {singleProduct?.quantity === 0 ? (
+                  {singleProduct?.productQuantity === 0 ? (
                     <Button
                       size="sm"
                       variant="success"
-                      onClick={() => AddProduct(singleProduct.quantity)}
+                      onClick={() => addProduct(singleProduct)}
                     >
                       Add Product
                     </Button>
@@ -215,15 +222,24 @@ const PlatziProductList = () => {
                         <FiMinus />
                       </Button>
                       <div className="quantity_box">
-                        {singleProduct?.quantity}
+                        {singleProduct?.productQuantity}
                       </div>
-                      <Button variant="default" onClick={() => quantityPlus()}>
+                      <Button variant="default" onClick={() => quantityPlus(singleProduct)}>
                         <FaPlus />
                       </Button>
                     </>
                   )}
+                  {/* <Button variant="default" onClick={() => quantityMinus()}>
+                        <FiMinus />
+                      </Button>
+                      <div className="quantity_box">
+                        {singleProduct?.productQuantity}
+                      </div>
+                      <Button variant="default" onClick={() => quantityPlus(singleProduct)}>
+                        <FaPlus />
+                      </Button> */}
                 </div>
-                {singleProduct?.quantity > 0 ? (
+                {singleProduct?.productQuantity > 0 ? (
                   <Button
                     variant="primary"
                     onClick={() => addToCartProduct(singleProduct)}
@@ -241,22 +257,22 @@ const PlatziProductList = () => {
             <Modal.Title>Cart</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-          <Table striped bordered hover>
-                      <thead>
-                        <tr>
-                          <th>Image</th>
-                          <th>Product Name</th>
-                          <th>Quantity</th>
-                          <th>Price</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      {allSelectedProduct.length === 0
-              ? "Cart is Empty"
-              : allSelectedProduct.map((item) => {
-                  return (
-                    <tr key={item.id}>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th> Name</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {allSelectedProduct.length === 0
+                  ? "Cart is Empty"
+                  : allSelectedProduct.map((item) => {
+                      return (
+                        <tr key={item.id}>
                           <td>
                             {
                               <Image
@@ -286,14 +302,19 @@ const PlatziProductList = () => {
                               </Button>
                             </div>
                           </td>
-                          <td>{item.price}</td>
-                          <td><TiDelete size={30} className="text-danger" onClick={()=>deleteCartItem(item)}/></td>
+                          <td>{item.price * item.quantity}</td>
+                          <td>
+                            <TiDelete
+                              size={30}
+                              className="text-danger"
+                              onClick={() => deleteCartItem(item)}
+                            />
+                          </td>
                         </tr>
-                  );
-                })}
-                      </tbody>
-                    </Table>
-            
+                      );
+                    })}
+              </tbody>
+            </Table>
           </Modal.Body>
         </Modal>
       </div>

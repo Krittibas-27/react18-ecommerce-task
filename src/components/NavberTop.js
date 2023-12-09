@@ -9,7 +9,7 @@ const NavberTop = ({ allSelectedProduct, ViewCartList }) => {
     localStorage.removeItem("userData");
     window.location.reload();
   };
-  console.log("allSelectedProduct", allSelectedProduct?.length);
+  //console.log("allSelectedProduct", allSelectedProduct?.length);
   return (
     <Navbar expand="lg" className="bg-primary" data-bs-theme="dark">
       <Container>
