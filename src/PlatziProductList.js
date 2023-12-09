@@ -18,26 +18,25 @@ import { FiShoppingCart, FiMinus } from "react-icons/fi";
 import { FaPlus } from "react-icons/fa6";
 import NavberTop from "./components/NavberTop";
 import { TiDelete } from "react-icons/ti";
+import moment from "moment";
+import SingleProViewModal from "./components/platzimodal/SingleProViewModal";
 
 const PlatziProductList = () => {
   const { catid } = useParams();
-  //console.log('catid-', catid)
-  const [resCategoryProdicts, setResCategoryProdicts] = useState([]);
+  const [resCategoryProducts, setResCategoryProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [query, setQuery] = useState("");
   const [viewModal, setViewModal] = useState(false);
   const [singleProduct, setSingleProduct] = useState(null);
+  const [newQuantity, setNewQuantity]= useState()
   const [allSelectedProduct, setAllSelectedProduct] = useState([]);
   const [cartModal, setCartModal] = useState(false);
-  const [quantity, setQuantity]= useState()
-  const [newQuantity, setNewQuantity]= useState()
 
   const getAllCatProducts = () => {
     setIsLoading(true);
     RootProductServer.get(`/api/v1/categories/${catid}/products`)
       .then((res) => {
-        //console.log("Res-", res);
         if (res.status === 200) {
           setIsLoading(false);
           const newManageProduct = res.data.map((product)=>({
@@ -45,7 +44,7 @@ const PlatziProductList = () => {
             productQuantity:0, 
           }))
           //console.log('newManageProduct=>',newManageProduct)
-          setResCategoryProdicts(newManageProduct);
+          setResCategoryProducts(newManageProduct);
           setIsError(false);
         }
       })
@@ -66,39 +65,34 @@ const PlatziProductList = () => {
     setViewModal(true);
     setSingleProduct(data);
   };
-  const addProduct = (productValue) => {
-    const incrementedProduct = resCategoryProdicts.map((pList)=>{
-      //console.log('pList=>',pList)
-      if(pList.id === productValue.id){
-        setQuantity(productValue.productQuantity++)
-        setNewQuantity(pList.productQuantity)
-        return {...pList, productQuantity: pList.productQuantity }
+  const quantityPlus=(pValue)=>{
+    const NewProductList = resCategoryProducts.map((pItem)=>{
+      if(pItem.id ===pValue.id){
+        setNewQuantity(pValue.productQuantity++)
+        return {...pItem, productQuantity: pItem.productQuantity}
       }
-      return pList
+      return pItem
     })
-    console.log('incrementedProduct=>',incrementedProduct)
-    return incrementedProduct
-  };
-  const quantityPlus = (productValue) => {
-    const incrementedProduct = resCategoryProdicts.map((pList)=>{
-      if(pList.id === productValue.id){
-        setQuantity(productValue.productQuantity++)
-        setNewQuantity(pList.productQuantity)
-        return {...pList, productQuantity: pList.productQuantity }
+    return NewProductList
+  }
+  const quantityMinus=(proValue)=>{
+    const NewProductDecr= resCategoryProducts.map((allProduct)=>{
+      if(allProduct.id ===proValue.id){
+        if(proValue.productQuantity >0){
+          setNewQuantity(proValue.productQuantity--)
+        }
+        if(proValue.productQuantity===0){
+          setAllSelectedProduct(
+            allSelectedProduct.filter((item) => item.id !== allProduct.id)
+          );
+        }
+       
+        return {...allProduct, productQuantity: allProduct.productQuantity}
       }
-      return pList
+      return allProduct
     })
-    return incrementedProduct
-  };
-  const quantityMinus = () => {
-    if (singleProduct.productQuantity > 0) {
-      setSingleProduct({
-        ...singleProduct,
-        productQuantity: singleProduct.productQuantity - 1,
-      });
-    }
-  };
-  console.log('singleProduct=>', singleProduct)
+    return NewProductDecr
+  }
   const addToCartProduct = (item) => {
     if (allSelectedProduct.indexOf(item) !== -1) return;
     setAllSelectedProduct([...allSelectedProduct, item]);
@@ -109,25 +103,21 @@ const PlatziProductList = () => {
   const ViewCartList = () => {
     setCartModal(true);
   };
-  const cartQuantityMinus = () => {};
-  const cartQuantityPlus = (data) => {
-    setAllSelectedProduct([
-      ...allSelectedProduct,
-      {
-        ...data,
-        quantity: data.quantity + 1,
-      },
-    ]);
-  };
   const deleteCartItem = (data) => {
     setAllSelectedProduct(
       allSelectedProduct.filter((item) => item.id !== data.id)
     );
   };
+const deleteAllCartProduct=()=>{
+  setAllSelectedProduct([])
+  setTimeout(() => {
+    setCartModal(false);
+  }, 1000);
+}
   useEffect(() => {
     getAllCatProducts();
   }, []);
-  //console.log("allSelectedProduct-", allSelectedProduct);
+
   return (
     <>
       <NavberTop
@@ -161,7 +151,7 @@ const PlatziProductList = () => {
             ) : isError ? (
               <h3>Product Not Found</h3>
             ) : (
-              searchProduct(resCategoryProdicts).map((item) => {
+              searchProduct(resCategoryProducts).map((item) => {
                 return (
                   <Col lg={3} md={6} className="my-4" key={item.id}>
                     <Card>
@@ -176,6 +166,10 @@ const PlatziProductList = () => {
                         <Card.Subtitle className="mb-2 text-muted">
                           Price - ${item.price}
                         </Card.Subtitle>
+                        <Card.Subtitle className="mb-2 proDate">
+                        {moment(item.updatedAt).format('MMM Do YYYY, h:mm:ss a')}
+                        </Card.Subtitle>
+                        <p></p>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -183,78 +177,12 @@ const PlatziProductList = () => {
               })
             )}
           </Row>
-        </Container>
+          <SingleProViewModal viewModal={viewModal} setViewModal={setViewModal} singleProduct={singleProduct} quantityMinus={quantityMinus} quantityPlus={quantityPlus} addToCartProduct={addToCartProduct} />
 
-        <Modal
-          centered
-          size="lg"
-          show={viewModal}
-          onHide={() => setViewModal(false)}
-        >
+          <Modal size="lg" show={cartModal} onHide={() => setCartModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>{singleProduct?.title}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Row className="align-items-center">
-              <Col md={6}>
-                <Image src={singleProduct?.images[0]} thumbnail />
-              </Col>
-              <Col md={6}>
-                <small>{singleProduct?.category?.name}</small>
-                <h5 className="text-dark">{singleProduct?.title}</h5>
-                {/* <p>{singleProduct.description}</p> */}
-                <span>
-                  Price - <strong>${singleProduct?.price}</strong>
-                </span>
-                <div className="d-flex mb-3 align-items-center">
-                  <span className="mr-2">Quantity </span> &nbsp;
-                  {singleProduct?.productQuantity === 0 ? (
-                    <Button
-                      size="sm"
-                      variant="success"
-                      onClick={() => addProduct(singleProduct)}
-                    >
-                      Add Product
-                    </Button>
-                  ) : (
-                    <>
-                      <Button variant="default" onClick={() => quantityMinus()}>
-                        <FiMinus />
-                      </Button>
-                      <div className="quantity_box">
-                        {singleProduct?.productQuantity}
-                      </div>
-                      <Button variant="default" onClick={() => quantityPlus(singleProduct)}>
-                        <FaPlus />
-                      </Button>
-                    </>
-                  )}
-                  {/* <Button variant="default" onClick={() => quantityMinus()}>
-                        <FiMinus />
-                      </Button>
-                      <div className="quantity_box">
-                        {singleProduct?.productQuantity}
-                      </div>
-                      <Button variant="default" onClick={() => quantityPlus(singleProduct)}>
-                        <FaPlus />
-                      </Button> */}
-                </div>
-                {singleProduct?.productQuantity > 0 ? (
-                  <Button
-                    variant="primary"
-                    onClick={() => addToCartProduct(singleProduct)}
-                  >
-                    <FiShoppingCart /> Add to Cart
-                  </Button>
-                ) : null}
-              </Col>
-            </Row>
-          </Modal.Body>
-        </Modal>
-
-        <Modal show={cartModal} onHide={() => setCartModal(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Cart</Modal.Title>
+            <Modal.Title>Cart - <Button size="sm" variant="danger" onClick={() => deleteAllCartProduct()}>Remove All</Button> 
+             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Table striped bordered hover>
@@ -269,7 +197,7 @@ const PlatziProductList = () => {
               </thead>
               <tbody>
                 {allSelectedProduct.length === 0
-                  ? "Cart is Empty"
+                  ? <h5 className="mt-4 text-center text-danger">Cart is Empty</h5>
                   : allSelectedProduct.map((item) => {
                       return (
                         <tr key={item.id}>
@@ -284,25 +212,22 @@ const PlatziProductList = () => {
                           </td>
                           <td>{item.title}</td>
                           <td>
-                            <div className="d-flex mb-3 align-items-center">
-                              <Button
-                                variant="default"
-                                onClick={() => cartQuantityMinus(item)}
-                              >
-                                <FiMinus />
-                              </Button>
-                              <div className="quantity_box">
-                                {item.quantity}
-                              </div>
-                              <Button
-                                variant="default"
-                                onClick={() => cartQuantityPlus(item)}
-                              >
-                                <FaPlus />
-                              </Button>
+                          <div className="d-flex mb-3 align-items-center">
+                            
+                            <Button variant="default"  onClick={() => quantityMinus(item)}>
+                              <FiMinus />
+                            </Button>
+                            <div className="quantity_box">
+                              {item.productQuantity}
                             </div>
+                            <Button variant="default" onClick={() => quantityPlus(item)}>
+                              <FaPlus />
+                            </Button>
+                          </div>
                           </td>
-                          <td>{item.price * item.quantity}</td>
+                          <td>
+                          {`$${item.price * item.productQuantity}`}
+                          </td>
                           <td>
                             <TiDelete
                               size={30}
@@ -313,10 +238,20 @@ const PlatziProductList = () => {
                         </tr>
                       );
                     })}
+                    <tr>
+                    <td colSpan={3} className="text-right"><strong>Total</strong></td>
+                    <td colSpan={2}>
+                      ${allSelectedProduct.reduce((total, item)=>total+(item.price*item.productQuantity),0)}
+                    </td>
+                </tr>
               </tbody>
             </Table>
           </Modal.Body>
         </Modal>
+
+        </Container>
+
+
       </div>
     </>
   );

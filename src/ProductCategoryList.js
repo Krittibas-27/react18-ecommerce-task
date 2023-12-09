@@ -3,6 +3,7 @@ import { Button, Card, Col, Container, Form, InputGroup, Row } from 'react-boots
 import { RootEcomDummyAPI } from './config/RootApi'
 import SpinnerComponent from './components/SpinnerComponent'
 import { FiShoppingCart } from "react-icons/fi";
+import NavberTop from './components/NavberTop';
 
 const ProductCategoryList = () => {
     const [serverAllProdicts, setServerAllProdicts] = useState([])
@@ -38,6 +39,8 @@ const ProductCategoryList = () => {
     
     //console.log('serverAllProdicts-', serverAllProdicts)
     return (
+        <>
+        <NavberTop/>
         <div className="my-4">
             <Container>
                 <h1 className='text-center'>ProductCategoryList</h1>
@@ -91,7 +94,7 @@ const ProductCategoryList = () => {
                 </Row>
             </Container>
         </div>
-
+</>
     )
 }
 

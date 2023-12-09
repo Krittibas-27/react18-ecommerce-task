@@ -34,8 +34,8 @@ const NavberTop = ({ allSelectedProduct, ViewCartList }) => {
         <div className="cart_icon" onClick={()=>ViewCartList()}>
         <FiShoppingCart className="text-white" size={30} />
               <Badge pill bg="light" text="dark" className="budge_menubar">
-                {" "}
-                {allSelectedProduct?.length}
+               
+                {allSelectedProduct?.length ? allSelectedProduct?.length : 0}
               </Badge>
         </div>
       </Container>
