@@ -1,15 +1,21 @@
 import React from "react";
-import { Navbar, Container, Nav, Badge } from "react-bootstrap";
+import { Navbar, Container, Nav, Badge, Button } from "react-bootstrap";
 import { FiShoppingCart } from "react-icons/fi";
+import Avatar from 'react-avatar';
+import { useNavigate } from "react-router-dom";
 
 const NavberTop = ({ allSelectedProduct, ViewCartList }) => {
+  const navigate = useNavigate()
   const storageData = JSON.parse(localStorage.getItem("userData"));
   const logOutUser = () => {
     //console.log('click')
     localStorage.removeItem("userData");
     window.location.reload();
   };
-  //console.log("allSelectedProduct", allSelectedProduct?.length);
+  const userProfile=()=>{
+    navigate('/userprofile')
+  }
+  console.log("storageData", storageData.username);
   return (
     <Navbar expand="lg" className="bg-primary" data-bs-theme="dark">
       <Container>
@@ -31,13 +37,15 @@ const NavberTop = ({ allSelectedProduct, ViewCartList }) => {
             )}
           </Nav>
         </Navbar.Collapse>
-        <div className="cart_icon" onClick={()=>ViewCartList()}>
+        <Button className="cart_icon cursor-pointer" onClick={()=>ViewCartList()} disabled={allSelectedProduct?.length===0}>
         <FiShoppingCart className="text-white" size={30} />
               <Badge pill bg="light" text="dark" className="budge_menubar">
                
                 {allSelectedProduct?.length ? allSelectedProduct?.length : 0}
               </Badge>
-        </div>
+        </Button>
+        <Avatar size="35" round={true} color={Avatar.getRandomColor('sitebase', ['red', 'green', 'blue'])} name={storageData.username} textSizeRatio={1.8}  className="cursor-pointer"
+        onClick={()=>userProfile()}/>
       </Container>
     </Navbar>
   );

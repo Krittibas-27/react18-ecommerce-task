@@ -5,6 +5,7 @@ import NavberTop from './components/NavberTop';
 import ProductCategoryList from './ProductCategoryList';
 import PlatziProductCategory from './PlatziProductCategory';
 import PlatziProductList from './PlatziProductList';
+import UserProfile from './UserProfile';
 
 const AllRoutes = () => {
   const storageData = JSON.parse(localStorage.getItem("userData"))
@@ -28,6 +29,7 @@ const AllRoutes = () => {
         <Route exac path='categories/:catid/products/' element={<PrivateRoute><PlatziProductList/></PrivateRoute>} />
 
         <Route exac path='/product/category' element={<PrivateRoute><ProductCategoryList/></PrivateRoute>} />
+        <Route exac path='/userprofile' element={<PrivateRoute><UserProfile/></PrivateRoute>} />
       </Routes>
     </>
   )

@@ -54,8 +54,10 @@ const PlatziProductList = () => {
       });
   };
   const searchProduct = (item) => {
+    console.log(item)
     return item.filter((data) => {
-      return data.title.toLowerCase().includes(query);
+      
+      return data.title.toLowerCase().includes(query)  ;
     });
   };
   const resetSearch = () => {
@@ -65,6 +67,16 @@ const PlatziProductList = () => {
     setViewModal(true);
     setSingleProduct(data);
   };
+  const addProduct=(data)=>{
+    const newAddProduct = resCategoryProducts.map((item)=>{
+      if(item.id === data.id){
+        setNewQuantity(data.productQuantity++)
+        return {...item, productQuantity: item.productQuantity}
+      }
+      return item
+    })
+    return newAddProduct
+  }
   const quantityPlus=(pValue)=>{
     const NewProductList = resCategoryProducts.map((pItem)=>{
       if(pItem.id ===pValue.id){
@@ -104,9 +116,16 @@ const PlatziProductList = () => {
     setCartModal(true);
   };
   const deleteCartItem = (data) => {
+    //console.log('allSelectedProduct length=>', allSelectedProduct.length)
+    if(allSelectedProduct.length===1){
+      setTimeout(() => {
+        setCartModal(false);
+      }, 1000);
+    }
     setAllSelectedProduct(
       allSelectedProduct.filter((item) => item.id !== data.id)
     );
+    
   };
 const deleteAllCartProduct=()=>{
   setAllSelectedProduct([])
@@ -177,15 +196,26 @@ const deleteAllCartProduct=()=>{
               })
             )}
           </Row>
-          <SingleProViewModal viewModal={viewModal} setViewModal={setViewModal} singleProduct={singleProduct} quantityMinus={quantityMinus} quantityPlus={quantityPlus} addToCartProduct={addToCartProduct} />
+
+          <SingleProViewModal viewModal={viewModal} setViewModal={setViewModal} singleProduct={singleProduct} quantityMinus={quantityMinus} quantityPlus={quantityPlus} addToCartProduct={addToCartProduct} addProduct={addProduct} />
 
           <Modal size="lg" show={cartModal} onHide={() => setCartModal(false)}>
           <Modal.Header closeButton>
-            <Modal.Title>Cart - <Button size="sm" variant="danger" onClick={() => deleteAllCartProduct()}>Remove All</Button> 
+            <Modal.Title>Cart  &nbsp;
+              {
+                allSelectedProduct.length === 0 ? "" :
+                <Button size="sm" variant="danger" onClick={() => deleteAllCartProduct()}>
+                Remove All
+              </Button> 
+              }
+              
              </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Table striped bordered hover>
+            {
+              allSelectedProduct.length === 0
+              ? <h5 className="mt-4 text-center text-danger">Cart is Empty</h5> :
+              <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Image</th>
@@ -246,6 +276,8 @@ const deleteAllCartProduct=()=>{
                 </tr>
               </tbody>
             </Table>
+            }
+            
           </Modal.Body>
         </Modal>
 
